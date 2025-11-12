@@ -55,4 +55,14 @@ public class ItemService {
         return Optional.of(item);
     }
 
+    //Delete "/item/:id"
+    public boolean deleteItemById(Long id) {
+        Optional<ItemModel> item = itemRepository.findById(id);
+        if (!item.isPresent()) return false;
+        
+        itemRepository.deleteById(id);
+        return true; 
+    }
+    
+
 }
