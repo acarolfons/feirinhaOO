@@ -13,28 +13,46 @@ import com.feirinha.api.repositories.ItemRepository;
 public class ItemService {
     final ItemRepository itemRepository;
 
-    ItemService(ItemRepository itemRepository){
+    ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    //Post "/items"
+    // Post "/items"
     public Optional<ItemModel> createItem(ItemDTO body) {
-        if(itemRepository.existsByName(body.getName())){
+        if (itemRepository.existsByName(body.getName())) {
             return Optional.empty();
         }
 
         ItemModel item = new ItemModel(body);
-        itemRepository.save(item);    
+        itemRepository.save(item);
         return Optional.of(item);
     }
 
-    //Get "/items"
+    // Get "/items"
     public List<ItemModel> getAllItems() {
         return itemRepository.findAll();
     }
 
-    //Get "/items/:id"
-    public Optional<ItemModel> getItemsById(Long id) { 
+    // Get "/items/:id"
+    public Optional<ItemModel> getItemsById(Long id) {
         return itemRepository.findById(id);
     }
+
+    // Put "/items/:id"
+    public Optional<ItemModel> updateItem(Long id, ItemDTO body) {
+        Optional<ItemModel> optionalItem = itemRepository.findById(id);
+        if (!optionalItem.isPresent()) 
+            return Optional.empty();
+        
+        if (itemRepository.existsByNameAndIdNot(body.getName(), id)) 
+            return null; 
+        
+        ItemModel item = optionalItem.get();
+        item.setName(body.getName());
+        item.setQuantity(body.getQuantity());
+        itemRepository.save(item);
+
+        return Optional.of(item);
+    }
+
 }

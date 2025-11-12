@@ -7,4 +7,5 @@ import com.feirinha.api.models.ItemModel;
 @Repository
 public interface ItemRepository extends JpaRepository<ItemModel, Long> {
     boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, Long id);
 }

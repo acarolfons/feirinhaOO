@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,14 +22,17 @@ import jakarta.validation.Valid;
 @RequestMapping("/items")
 public class ItemController {
     final ItemService itemService;
+
     ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
     @PostMapping()
-    public ResponseEntity<Object> createItem(@RequestBody @Valid ItemDTO body) { // Nosso @RequestBody é nosso req body e diz que é uma String
-        Optional<ItemModel> item = itemService.createItem(body); 
-        if(!item.isPresent()) return ResponseEntity.status(HttpStatus.CONFLICT).body("Item já está na lista");   
+    public ResponseEntity<Object> createItem(@RequestBody @Valid ItemDTO body) { // Nosso @RequestBody é nosso req body
+                                                                                 // e diz que é uma String
+        Optional<ItemModel> item = itemService.createItem(body);
+        if (!item.isPresent())
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Item já está na lista");
         return ResponseEntity.status(HttpStatus.CREATED).body(item.get());
     }
 
@@ -40,12 +44,23 @@ public class ItemController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItemsById(@PathVariable("id") Long id) {
         Optional<ItemModel> item = itemService.getItemsById(id);
-    
+
         if (!item.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não encontrado!");
-        } 
-    
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(item.get());
     }
-    
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateItem(@PathVariable Long id, @RequestBody @Valid ItemDTO body) {
+        Optional<ItemModel> item = itemService.updateItem(id, body);
+        if (item == null)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Item already exists with this name!");
+        if (!item.isPresent())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found!");
+
+        return ResponseEntity.status(HttpStatus.OK).body(item.get());
+    }
+
 }
