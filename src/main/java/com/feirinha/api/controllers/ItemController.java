@@ -29,11 +29,10 @@ public class ItemController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> createItem(@RequestBody @Valid ItemDTO body) { // Nosso @RequestBody é nosso req body
-                                                                                 // e diz que é uma String
+    public ResponseEntity<Object> createItem(@RequestBody @Valid ItemDTO body) { 
         Optional<ItemModel> item = itemService.createItem(body);
         if (!item.isPresent())
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Item já está na lista");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("This item already exists!");
         return ResponseEntity.status(HttpStatus.CREATED).body(item.get());
     }
 
@@ -47,7 +46,7 @@ public class ItemController {
         Optional<ItemModel> item = itemService.getItemsById(id);
 
         if (!item.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found!");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(item.get());
@@ -67,7 +66,7 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItemById(@PathVariable Long id) {
         boolean deleted = itemService.deleteItemById(id);
-        
+
         if (!deleted) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
