@@ -32,4 +32,9 @@ public class ItemService {
     public List<ItemModel> getAllItems() {
         return itemRepository.findAll();
     }
+
+    //Get "/items/:id"
+    public Optional<ItemModel> getItemsById(Long id) { 
+        return itemRepository.findById(id);
+    }
 }
