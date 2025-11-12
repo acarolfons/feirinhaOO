@@ -1,5 +1,6 @@
 package com.feirinha.api.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -25,5 +26,10 @@ public class ItemService {
         ItemModel item = new ItemModel(body);
         itemRepository.save(item);    
         return Optional.of(item);
+    }
+
+    //Get "/items"
+    public List<ItemModel> getAllItems() {
+        return itemRepository.findAll();
     }
 }
